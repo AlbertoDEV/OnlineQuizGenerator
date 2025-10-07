@@ -1,0 +1,21 @@
+<nav class="navbar" th:fragment="navbar">
+    <div class="navbar-container">
+        <a th:href="@{/}" class="navbar-brand" th:text="#{app.title}">Quiz Generator</a>
+        <div class="navbar-menu-container">
+            <a th:href="@{/quizzes/new}" class="button" th:text="#{admin.quiz.create.new}" sec:authorize="isAuthenticated()">Create New Quiz</a>
+            <span class="navbar-text" sec:authentication="name">User</span>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="button" th:text="#{user.logout.button}">Logout</button>
+            </form>
+            <button id="menu-toggle" class="menu-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <div id="language-menu" class="language-menu">
+                <a th:href="@{?lang=en}" th:text="#{language.en}">English</a>
+                <a th:href="@{?lang=es}" th:text="#{language.es}">Español</a>
+            </div>
+        </div>
+    </div>
+</nav>

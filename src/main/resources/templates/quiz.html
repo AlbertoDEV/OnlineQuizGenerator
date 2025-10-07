@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{quiz.take.title}">Take Quiz</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <main>
+            <section class="quiz-container">
+                <h1 th:text="${quiz.title}">Quiz Title</h1>
+                <form th:action="@{/quiz/submit/{id}(id=${quiz.id})}" method="post">
+                    <div th:each="question, questionStat : ${quiz.questions}" class="question-container">
+                        <h2 class="question-text" th:text="${question.text}">Question text</h2>
+                        <div class="options-container">
+                            <div th:each="option, optionStat : ${question.options}" class="option">
+                                <input type="radio" th:id="'option' + ${question.id} + '_' + ${optionStat.index}"
+                                       th:name="'question_' + ${question.id}" th:value="${optionStat.index}" required />
+                                <label th:for="'option' + ${question.id} + '_' + ${optionStat.index}" th:text="${option}">Option text</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="button" th:text="#{quiz.take.submit.button}">Submit Quiz</button>
+                        <a th:href="@{/user}" class="button" th:text="#{result.back.button}">Back to Dashboard</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

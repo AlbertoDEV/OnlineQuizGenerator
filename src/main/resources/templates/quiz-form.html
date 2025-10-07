@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${quiz.id == null}" th:text="#{quiz.form.create.title}">Create Quiz</title>
+    <title th:if="${quiz.id != null}" th:text="#{quiz.form.edit.title}">Edit Quiz</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container"
+         th:attr="data-question-label=#{quiz.form.question.label}, data-options-label=#{quiz.form.options.title}">
+        <main>
+            <section class="quiz-form-section">
+                <h1 th:if="${quiz.id == null}" th:text="#{quiz.form.create.title}">Create Quiz</h1>
+                <h1 th:if="${quiz.id != null}" th:text="#{quiz.form.edit.title}">Edit Quiz</h1>
+
+                <form th:action="@{/quizzes}" th:object="${quiz}" method="post">
+                    <input type="hidden" th:field="*{id}" />
+                    <div>
+                        <label for="title" th:text="#{quiz.form.title.label}">Title</label>
+                        <input type="text" id="title" th:field="*{title}" required />
+                    </div>
+
+                    <h2><span th:text="#{quiz.form.questions.title}">Questions</span></h2>
+                    <div id="questions-container">
+                        <div th:each="question, questionStat : *{questions}" class="question-form">
+                            <input type="hidden" th:field="*{questions[__${questionStat.index}__].id}" />
+                            <div>
+                                <label><span th:text="#{quiz.form.question.label}">Question</span> <span th:text="${questionStat.index + 1}"></span></label>
+                                <input type="text" th:field="*{questions[__${questionStat.index}__].text}" required />
+                            </div>
+                            <div class="options-container">
+                                <h3><span th:text="#{quiz.form.options.title}">Options</span></h3>
+                                <div th:each="option, optionStat : ${question.options}" class="option-group">
+                                    <input type="radio" th:name="|questions[${questionStat.index}].correctAnswer|" th:value="${optionStat.index}" th:checked="${question.correctAnswer == optionStat.index}" />
+                                    <input type="text" th:field="*{questions[__${questionStat.index}__].options[__${optionStat.index}__]}" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="button" id="add-question-btn" class="button" th:text="#{quiz.form.add.question.button}">Add Question</button>
+                        <button type="submit" class="button" th:text="#{quiz.form.save.button}">Save Quiz</button>
+                        <a th:href="@{/admin}" class="button" th:text="#{form.cancel.button}">Cancel</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('add-question-btn').addEventListener('click', function() {
+            const container = document.querySelector('.container');
+            const questionLabel = container.dataset.questionLabel;
+            const optionsLabel = container.dataset.optionsLabel;
+
+            const questionsContainer = document.getElementById('questions-container');
+            const questionIndex = questionsContainer.getElementsByClassName('question-form').length;
+
+            const questionForm = document.createElement('div');
+            questionForm.className = 'question-form';
+            questionForm.innerHTML = `
+                <div>
+                    <label>${questionLabel} ${questionIndex + 1}:</label>
+                    <input type="text" name="questions[${questionIndex}].text" required />
+                </div>
+                <div class="options-container">
+                    <h3>${optionsLabel}:</h3>
+                    <div class="option-group">
+                        <input type="radio" name="questions[${questionIndex}].correctAnswer" value="0" checked />
+                        <input type="text" name="questions[${questionIndex}].options[0]" required />
+                    </div>
+                    <div class="option-group">
+                        <input type="radio" name="questions[${questionIndex}].correctAnswer" value="1" />
+                        <input type="text" name="questions[${questionIndex}].options[1]" required />
+                    </div>
+                    <div class="option-group">
+                        <input type="radio" name="questions[${questionIndex}].correctAnswer" value="2" />
+                        <input type="text" name="questions[${questionIndex}].options[2]" required />
+                    </div>
+                    <div class="option-group">
+                        <input type="radio" name="questions[${questionIndex}].correctAnswer" value="3" />
+                        <input type="text" name="questions[${questionIndex}].options[3]" required />
+                    </div>
+                </div>
+            `;
+            questionsContainer.appendChild(questionForm);
+        });
+    </script>
+</body>
+</html>

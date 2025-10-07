@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{admin.dashboard.title}">Admin Panel</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <main>
+            <section class="admin-controls">
+                <h2 th:text="#{admin.dashboard.title}">Admin Panel</h2>
+            </section>
+
+            <section id="quizList" class="quiz-list">
+                <div th:if="${#lists.isEmpty(quizzes)}">
+                    <p th:text="#{user.my.quizzes.empty}">You have not created any quizzes yet.</p>
+                </div>
+                <div th:each="quiz : ${quizzes}" class="quiz-item">
+                    <h3 th:text="${quiz.title}">Quiz Title</h3>
+                    <p><strong th:if="${isAdmin}" th:text="'(Owner: ' + ${quiz.user.username} + ')'"></strong></p>
+                    <p><span th:text="${#lists.size(quiz.questions)}"></span> <span th:text="#{user.quiz.questions}">questions</span></p>
+                    <div class="quiz-actions">
+                        <a th:href="@{/quizzes/edit/{id}(id=${quiz.id})}" class="button" th:text="#{admin.quiz.edit.button}">Edit</a>
+                        <a th:href="@{/quizzes/share/{id}(id=${quiz.id})}" class="button" th:text="#{admin.quiz.share.button}">Share</a>
+                        <form th:action="@{/quizzes/delete/{id}(id=${quiz.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="button danger" th:text="#{admin.quiz.delete.button}">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

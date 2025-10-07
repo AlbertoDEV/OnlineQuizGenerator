@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{user.dashboard.title}">User Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <main>
+            <section id="myQuizzesSection" class="quiz-list-section">
+                <h2 th:text="#{user.my.quizzes.title}">My Quizzes</h2>
+                <div th:if="${#lists.isEmpty(myQuizzes)}">
+                    <p><span th:text="#{user.my.quizzes.empty}">You have not created any quizzes yet.</span> <a th:href="@{/quizzes/new}" th:text="#{user.my.quizzes.create}">Create one now!</a></p>
+                </div>
+                <div id="myQuizzes" class="quiz-grid">
+                    <div th:each="quiz : ${myQuizzes}" class="quiz-item">
+                        <h3 th:text="${quiz.title}">Quiz Title</h3>
+                        <p><span th:text="${#lists.size(quiz.questions)}"></span> <span th:text="#{user.quiz.questions}">questions</span></p>
+                        <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="button" th:text="#{user.quiz.start.button}">Start Quiz</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sharedQuizzesSection" class="quiz-list-section">
+                <h2 th:text="#{user.shared.quizzes.title}">Other Quizzes</h2>
+                <div th:if="${#lists.isEmpty(sharedQuizzes)}">
+                    <p th:text="#{user.shared.quizzes.empty}">No quizzes have been shared with you yet.</p>
+                </div>
+                <div id="sharedQuizzes" class="quiz-grid">
+                    <div th:each="quiz : ${sharedQuizzes}" class="quiz-item">
+                        <h3 th:text="${quiz.title}">Quiz Title</h3>
+                        <p><span th:text="${#lists.size(quiz.questions)}"></span> <span th:text="#{user.quiz.questions}">questions</span></p>
+                        <a th:href="@{/quiz/{id}(id=${quiz.id})}" class="button" th:text="#{user.quiz.start.button}">Start Quiz</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{share.form.title}">Share Quiz</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/main.js}"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <main>
+            <section class="share-quiz-section">
+                <h1 th:text="#{share.form.title}">Share Quiz</h1>
+                <h2 th:text="${quiz.title}">Quiz Title</h2>
+
+                <form th:action="@{/quizzes/share/{id}(id=${quiz.id})}" method="post">
+                    <div>
+                        <label for="username" th:text="#{share.form.username.label}">Username to share with:</label>
+                        <input type="text" id="username" name="username" required />
+                    </div>
+                    <div>
+                        <button type="submit" class="button" th:text="#{share.form.share.button}">Share</button>
+                        <a th:href="@{/admin}" class="button" th:text="#{form.cancel.button}">Cancel</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
