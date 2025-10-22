@@ -5,7 +5,9 @@ import com.example.quizgenerator.model.Quiz;
 import com.example.quizgenerator.model.User;
 import com.example.quizgenerator.service.QuizService;
 import com.example.quizgenerator.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,14 +18,18 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserService userService;
     private final QuizService quizService;
+    private final JdbcTemplate jdbcTemplate;
 
-    public DataInitializer(UserService userService, QuizService quizService) {
+    @Autowired
+    public DataInitializer(UserService userService, QuizService quizService, JdbcTemplate jdbcTemplate) {
         this.userService = userService;
         this.quizService = quizService;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        jdbcTemplate.execute("CREATE SCHEMA IF NOT EXISTS \"quiz-generator\"");
         // Create Admin User
         if (userService.findByUsername("admin") == null) {
             User admin = new User();
